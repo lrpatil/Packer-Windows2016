@@ -1,0 +1,49 @@
+{
+	"variables": {
+		"aws_source_ami": "ami-0aecc0f82e27f4e05",
+		"aws_vpc_id": "vpc-08c83cb91360c7490",
+		"aws_subnet_id": "subnet-0844ab456719c93bd",
+		"aws_kms_key_id": "2cd29851-a961-4649-9bb0-b68e250e92b9",
+		"ec2_instance_type": "t2.micro",
+		"output_ami_name": "Windows2016-Golden-AMI"
+	},
+	"builders": [{
+		"type": "amazon-ebs",
+		"source_ami": "{{user `aws_source_ami`}}",
+		"ami_virtualization_type": "hvm",
+		"region": "ap-south-1",
+		"iam_instance_profile": "ssm",
+		"vpc_id": "{{user `aws_vpc_id`}}",
+		"subnet_id": "{{user `aws_subnet_id`}}",
+		"instance_type": "{{user `ec2_instance_type`}}",
+		"communicator": "winrm",
+		"ssh_pty": false,
+		"winrm_username": "Administrator",
+		"winrm_password": "SuperS3cr3t!",
+		"force_deregister": true,
+		"force_delete_snapshot": true,
+		"encrypt_boot": true,
+		"associate_public_ip_address": false,
+		"kms_key_id": "{{user `aws_kms_key_id`}}",
+		"ami_name": "{{user `output_ami_name`}}",
+		"tags": {
+			"Name": "Windows2016-Golden-AMI",
+			"BuiltBy": "Packer",
+			"PackagesIncluded": "Powershell"
+		}
+	}],
+	"provisioners": [{
+			"type": "powershell",
+			"environment_vars": ["DEVOPS_LIFE_IMPROVER=PACKER"],
+			"inline": [
+				"Write-Host \"HELLO NEW USER; WELCOME TO $Env:DEVOPS_LIFE_IMPROVER\"",
+				"Write-Host \"You need to use backtick escapes when using\"",
+				"Write-Host \"characters such as DOLLAR`$ directly in a command\"",
+				"Write-Host \"or in your own scripts.\""
+			]
+		},
+		{
+			"type": "windows-restart"
+		}
+	]
+}
