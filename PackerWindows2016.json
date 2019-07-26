@@ -16,6 +16,7 @@
 		"vpc_id": "{{user `aws_vpc_id`}}",
 		"subnet_id": "{{user `aws_subnet_id`}}",
 		"instance_type": "{{user `ec2_instance_type`}}",
+		"user_data_file":"./ec2-userdata.ps1",
 		"communicator": "winrm",
 		"ssh_pty": false,
 		"winrm_username": "Administrator",
@@ -37,18 +38,10 @@
 			"PackagesIncluded": "Powershell"
 		}
 	}],
-	"provisioners": [{
-			"type": "powershell",
-			"environment_vars": ["DEVOPS_LIFE_IMPROVER=PACKER"],
-			"inline": [
-				"Write-Host \"HELLO NEW USER; WELCOME TO $Env:DEVOPS_LIFE_IMPROVER\"",
-				"Write-Host \"You need to use backtick escapes when using\"",
-				"Write-Host \"characters such as DOLLAR`$ directly in a command\"",
-				"Write-Host \"or in your own scripts.\""
-			]
-		},
+	"provisioners": [
 		{
-			"type": "windows-restart"
+            "type": "powershell",
+            "script": "init.ps1"
 		}
 	]
 }
