@@ -4,6 +4,7 @@
 		"aws_vpc_id": "vpc-08c83cb91360c7490",
 		"aws_subnet_id": "subnet-0844ab456719c93bd",
 		"ec2_instance_type": "t2.micro",
+		"aws_kms_key_id": "2cd29851-a961-4649-9bb0-b68e250e92b9",
 		"output_ami_name": "Windows2016-Golden-AMI"
 	},
 	"builders": [{
@@ -18,8 +19,14 @@
 		"user_data_file":"./ec2-userdata.ps1",
 		"communicator": "winrm",
 		"winrm_username": "Administrator",
+		"winrm_password": "SuperS3cr3t!",
         	"winrm_use_ssl": true,
         	"winrm_insecure": true,
+		"force_deregister": true,
+		"force_delete_snapshot": true,
+		"encrypt_boot": true,
+		"associate_public_ip_address": false,
+		"kms_key_id": "{{user `aws_kms_key_id`}}",
 		"ami_name": "{{user `output_ami_name`}}",
 		"tags": {
 			"Name": "Windows2016-Golden-AMI",
